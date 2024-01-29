@@ -1,8 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, conint
-from datetime import date, datetime, time
+from dateutil import parser
 from typing import Union
-from zoneinfo import ZoneInfo
 import pytz
 
 
@@ -26,7 +25,7 @@ class Response_Payload(BaseModel):
 async def make_Response_Payload(Request_Payload: Request_Payload):
 	fee = delivery_fee_calculator(Request_Payload)
 	if fee == None:
-		raise HTTPException(status_code = 400, detail = "Error: Time string isn't in ISO format.")
+		raise HTTPException(status_code = 400, detail = "Error: Time string isn't valid.")
 	return Response_Payload(delivery_fee = fee)
 
 
@@ -54,7 +53,7 @@ def get_delivery_distance_fee(delivery_distance):
 	while delivery_distance > 0:
 		fee += 100
 		delivery_distance -= 500
-	return min(2, fee)
+	return max(200, fee)
 
 
 
@@ -79,17 +78,13 @@ def get_items_surcharge(items):
 ###
 def get_friday_rush_multiplier(time):
 	try:
-		dt_object = datetime.fromisoformat(time)
+		dt_object = parser.parse(time)
 		start_rush = dt_object.replace(hour = 15, minute = 0, second = 0)
 		end_rush = dt_object.replace(hour = 19, minute = 0, second = 0)
-		weekday = dt_object.strftime("%A")
-		if weekday == "Friday":
-			if start_rush <= dt_object <= end_rush:
+		if  dt_object.weekday() == 4 and start_rush <= dt_object <= end_rush:
 				return 1.2
-			else:
-				return 1
 		else:
-			return 1
+				return 1
 	except ValueError:
 		return None
 	
