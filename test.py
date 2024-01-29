@@ -4,7 +4,7 @@ from main import get_delivery_distance_fee, get_small_order_surcharge, \
 
 
 
-@pytest.mark.parametrize("a, expected", [
+@pytest.mark.parametrize("input, expected", [
 	# Friday
 	("2024-01-26T00:00:00Z", 1),
 	("2024-01-26T00:00Z", 1),
@@ -61,16 +61,18 @@ from main import get_delivery_distance_fee, get_small_order_surcharge, \
 	("2024-01-26T25Z", None),
 	("/202401/26T00Z", None),
 	("It's Crazy! It's Party!", None),
-		# No timezone
+	# No timezone
 	("2024-01-25T16:15:15", 1),
 	("2024-01-25T16:15", 1),
-	("2024-01-25T16", 1),
+	("2024-01-25T16", 1)
 ])
-def test_get_friday_rush_multiplier(a, expected):
-	result = get_friday_rush_multiplier(a)
-	assert result == expected, f"Time string \"{a}\" failed! Should return {expected}, but returned {result}."
+def test_get_friday_rush_multiplier(input, expected):
+	result = get_friday_rush_multiplier(input)
+	assert result == expected, f"Time string \"{input}\" failed! Should return {expected}, but returned {result}."
 
-@pytest.mark.parametrize("a, expected", [
+
+
+@pytest.mark.parametrize("input, expected", [
 	(0, 200),
 	(1, 200),
 	(499, 200),
@@ -88,11 +90,93 @@ def test_get_friday_rush_multiplier(a, expected):
 	(2499, 500),
 	(2500, 500),
 	(2501, 600),
-	(20000, 4000)
+	(20000, 4000),
+	(20000000, 4000000),
+])
+def test_get_delivery_distance_fee(input, expected):
+	result = get_delivery_distance_fee(input)
+	assert result == expected, f"get_delivery_distance_fee failed with value {input}! Should return {expected}, but returned {result}."
 
-	
-	
-	])
-def test_get_delivery_distance_fee(a, expected):
-	result = get_delivery_distance_fee(a)
-	assert result == expected, f"Delivery_distance {a} failed! Should return {expected}, but returned {result}."
+
+@pytest.mark.parametrize("input, expected_total", [
+	(0, 1000),
+	(1, 1000),
+	(10, 1000),
+	(99, 1000),
+	(100, 1000),
+	(101, 1000),
+	(199, 1000),
+	(300, 1000),
+	(401, 1000),
+	(450, 1000),
+	(551, 1000),
+	(999, 1000),
+	(1000, 1000),
+
+])
+def test_get_small_order_surcharge_fee(input, expected_total):
+	result = get_small_order_surcharge(input)
+	assert input <= 1000 and result + input == expected_total, f"get_small_order_surcharge failed with value {input}! Should return {expected_total - input}, but returned {result}."
+
+
+
+@pytest.mark.parametrize("input, expected", [
+	(1000, 0),
+	(1001, 0),
+	(1002, 0),
+	(1010, 0),
+	(42000, 0),
+	(99999999999999999999, 0),
+])
+def test_get_small_order_surcharge_no_fee(input, expected):
+	result = get_small_order_surcharge(input)
+	assert result == expected, f"get_small_order_surcharge failed with value {input}! Should return 0, but returned {result}."
+
+
+
+@pytest.mark.parametrize("input, expected", [
+	(0, 0),
+	(4, 0),
+	(5, 50),
+	(10, 300),
+	(12, 400),
+	(13, 570),
+	(14, 620)
+])
+def test_get_items_surcharge(input, expected):
+	result = get_items_surcharge(input)
+	assert result == expected, f"get_items_surcharge failed with value {input}! Should return {expected}, but returned {result}."
+
+
+
+@pytest.mark.parametrize("input, expected", [
+	(200, 200),
+	(500, 500),
+	(1000, 1000),
+	(1500, 1500),
+	(1501, 1500),
+	(2500, 1500),
+	(42000, 1500),
+	(999999999999, 1500),
+])
+def test_fee_cutter_fee(input, expected):
+	result = fee_cutter(input, 2500)
+	assert result == expected, f"fee_cutter failed with fee of {input}! Should return {expected}, but returned {result}."
+
+
+
+@pytest.mark.parametrize("input, expected", [
+	(0, 1200),
+	(1, 1200),
+	(500, 1200),
+	(5000, 1200),
+	(19900, 1200),
+	(19999, 1200),
+	(20000, 0),
+	(40000, 0),
+	(2420000, 0),
+	(999999999999, 0),
+])
+def test_fee_cutter_cart_value(input, expected):
+	result = fee_cutter(1200, input)
+	assert result == expected, f"fee_cutter failed with fcart_value of {input}! Should return {expected}, but returned {result}."

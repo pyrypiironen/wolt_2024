@@ -83,8 +83,7 @@ def get_friday_rush_multiplier(time):
 		end_rush = dt_object.replace(hour = 19, minute = 0, second = 0)
 		if  dt_object.weekday() == 4 and start_rush <= dt_object <= end_rush:
 				return 1.2
-		else:
-				return 1
+		return 1
 	except ValueError:
 		return None
 	
