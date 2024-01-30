@@ -6,10 +6,10 @@ I am applying for backend position using Python.
 
 **Heroku
 
-## The Application
-
 The Delivery Fee Calculator is an HTTP API (single POST endpoint), which calculates the delivery fee based on the information in
 the request payload (JSON) and includes the calculated delivery fee in the response payload (JSON).
+
+## My app
 
 ### Libraries and classes
 
@@ -62,7 +62,7 @@ wouldn't raise an error without using this.
  - Validate that ISO format includes time part, not only date part
    - I did this by checking if the string includes T. If not, it cannot be on ISO format including time part.
    - Even though the Specification of the Preliminary Assignment doesn't specify that ISO format should be in some
-specific form it would be impossible to check the Friday Rush without exact time.
+specific form it would be impossible to check the Friday Rush without exact time so I decide to handle ISO format without time part as an invalid input.
 
 <details>
 <summary>Click here to see code.</summary>
@@ -86,3 +86,44 @@ def validate_time(time: str) -> str:
 	return time
 ```
 </details>
+
+### The Application
+
+```python
+app = FastAPI(title="Delivery Fee Calculator")
+```
+My app using FastAPI Endpoint at the URL path `"/delivery_fee/"`, specifies Response Model, define the function for the actual endpoint handler, make the function call for `delivery_fee_calculator` and returns Response_Payload with calculated value.
+
+<details>
+<summary>Click here to see code.</summary>
+	
+```python
+@app.post("/delivery_fee/", response_model = Response_Payload)
+async def make_Response_Payload(Request_Payload: Request_Payload):
+	fee = delivery_fee_calculator(Request_Payload)
+	return Response_Payload(delivery_fee = fee)
+```
+</details>
+
+### Delivery Fee Calculator
+
+The main functionality of application has build in `delivery_fee_calculator`.
+
+It takes in the Request_Payload and using values of the payload to calculate the correct delivery fee.
+
+<details>
+<summary>Click here to see code.</summary>
+	
+```python
+def delivery_fee_calculator(Request_Payload):
+	fee = get_delivery_distance_fee(Request_Payload.delivery_distance)
+	fee += get_small_order_surcharge(Request_Payload.cart_value)
+	fee += get_items_surcharge(Request_Payload.number_of_items)
+	fee *= get_friday_rush_multiplier(Request_Payload.time)
+	fee = fee_cutter(fee, Request_Payload.cart_value)
+	return int(fee)
+```
+</details>
+
+
+
