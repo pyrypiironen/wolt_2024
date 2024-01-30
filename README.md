@@ -1,8 +1,8 @@
 # Delivery Fee Calculator
 
-This is my solution to [Wolt Summer 2024 Engineering Intership](https://github.com/woltapp/engineering-internship-2024).
+This is my solution to [Wolt Summer 2024 Engineering Internship](https://github.com/woltapp/engineering-internship-2024).
 
-I am applying for backend position using Python.
+I am applying for a backend position using Python.
 
 The Delivery Fee Calculator is an HTTP API (single POST endpoint), which calculates the delivery fee based on the information in the request payload (JSON) and includes the calculated delivery fee in the response payload (JSON).
 
@@ -10,7 +10,7 @@ The Delivery Fee Calculator is an HTTP API (single POST endpoint), which calcula
 
 The Application starts running by `uvicorn main:app`
 
-When the application is running you can sent POST request to `http://127.0.0.1:8000/delivery_fee/`
+When the application is running you can send a POST request to `http://127.0.0.1:8000/delivery_fee/`
 
 Press `CTRL + C` to stop running.
 
@@ -43,8 +43,8 @@ from validators import validate_time
 
 ### Payloads and error handling
 
-I used BaseModel, Field and field_validator from pydantic to build payloads, because this offered an opportunity to
-keep code clean and not too bloated same time with good and partly automated error handling.
+I used BaseModel, Field, and field_validator from pydantic to build payloads, because this offered an opportunity to
+keep code clean and not too bloated at the same time with good and partly automated error handling.
 
 <details>
 <summary>Click here to see payloads.</summary>
@@ -66,21 +66,20 @@ class Response_Payload(BaseModel):
 ```
 </details>
 
-`Field(strict = True)` is for enforce strict type checking for the field it is applied to. Eg. string "5" or float 5.0
+`Field(strict = True)` is for enforcing strict type checking for the field it is applied to. Eg. string "5" or float 5.0
 wouldn't raise an error without using this.
 
 `ge = 0` and `ge = 1` are for minimum values for the int (ge = greater or equal).
 
 `@field_validator("time")` validate the time from Request_Payload.
  - Validate that time is a string.
- - Validate that the string is on ISO format.
- - Validate that ISO format includes time part, not only date part
-   - I did this by checking if the string includes T. If not, it cannot be on ISO format including time part.
-   - Even though the Specification of the Preliminary Assignment doesn't specify that ISO format should be in some
-specific form it would be impossible to check the Friday Rush without exact time so I decide to handle ISO format without time part as an invalid input.
+ - Validate that the string is in ISO format.
+ - Validate that ISO format includes the time part, not only the date part
+   - I did this by checking if the string includes T. If not, it cannot be in ISO format including the time part.
+   - Even though the Specification of the Preliminary Assignment doesn't specify that ISO format should be in some specific form it would only be possible to check the Friday Rush with the exact time so I decided to handle ISO format without the time part as an invalid input.
 
 <details>
-<summary>Click here to see code.</summary>
+<summary>Click here to see the code.</summary>
 	
 ```python
 	@field_validator("time")
@@ -107,10 +106,10 @@ def validate_time(time: str) -> str:
 ```python
 app = FastAPI(title="Delivery Fee Calculator")
 ```
-My app using FastAPI Endpoint at the URL path `"/delivery_fee/"`, specifies Response Model, define the function for the actual endpoint handler, make the function call for `delivery_fee_calculator` and returns Response_Payload with calculated value.
+My app using FastAPI Endpoint at the URL path `"/delivery_fee/"`, specifies the Response Model, defines the function for the actual endpoint handler, makes the function call for `delivery_fee_calculator`, and returns Response_Payload with calculated value.
 
 <details>
-<summary>Click here to see code.</summary>
+<summary>Click here to see the code.</summary>
 	
 ```python
 @app.post("/delivery_fee/", response_model = Response_Payload)
@@ -122,12 +121,12 @@ async def make_Response_Payload(Request_Payload: Request_Payload):
 
 ### delivery_fee_calculator
 
-The main functionality of application has build in `delivery_fee_calculator`.
+The main functionality of the application is built in `delivery_fee_calculator`.
 
-It takes in the Request_Payload and using values of the payload to calculate the correct delivery fee.
+It takes in the Request_Payload and uses the values of the payload to calculate the correct delivery fee.
 
 <details>
-<summary>Click here to see code.</summary>
+<summary>Click here to see the code.</summary>
 	
 ```python
 def delivery_fee_calculator(Request_Payload):
@@ -142,14 +141,14 @@ def delivery_fee_calculator(Request_Payload):
 
 ### get_delivery_distance
 
-`get_delivery_distance` count the base fee of order based on the delivery distance.
+`get_delivery_distance` counts the base fee of the order based on the delivery distance.
  - A delivery fee for the first 1000 meters (=1km) is 2€.
  - If the delivery distance is longer than that, 1€ is added for every additional 500 meters.
  
-&rArr; The function add 100 cents to fee and reduce 500 meters from delivery_distance while delicery_distance is equals or smaller than zero. At the end it returns 200 or fee, if fee is more than 200.
+&rArr; The function adds 100 cents to the fee and reduces 500 meters from delivery_distance while delicery_distance is equal to or smaller than zero. In the end, it returns 200 or fee if the fee is more than 200.
 
 <details>
-<summary>Click here to see code.</summary>
+<summary>Click here to see the code.</summary>
 	
 ```python
 def get_delivery_distance_fee(delivery_distance):
@@ -168,7 +167,7 @@ def get_delivery_distance_fee(delivery_distance):
  - An extra "bulk" fee applies for more than 12 items of 1,20€.
 
 <details>
-<summary>Click here to see code.</summary>
+<summary>Click here to see the code.</summary>
 	
 ```python
 def get_items_surcharge(items):
@@ -185,7 +184,7 @@ def get_items_surcharge(items):
 Add text
 
 <details>
-<summary>Click here to see code.</summary>
+<summary>Click here to see the code.</summary>
 	
 ```python
 def get_friday_rush_multiplier(time):
