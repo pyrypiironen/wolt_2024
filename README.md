@@ -4,10 +4,25 @@ This is my solution to [Wolt Summer 2024 Engineering Intership](https://github.c
 
 I am applying for backend position using Python.
 
-**Heroku
+The Delivery Fee Calculator is an HTTP API (single POST endpoint), which calculates the delivery fee based on the information in the request payload (JSON) and includes the calculated delivery fee in the response payload (JSON).
 
-The Delivery Fee Calculator is an HTTP API (single POST endpoint), which calculates the delivery fee based on the information in
-the request payload (JSON) and includes the calculated delivery fee in the response payload (JSON).
+## Usage
+
+The Application starts running by `uvicorn main:app`
+
+When the application is running you can sent POST request to `http://127.0.0.1:8000/delivery_fee/`
+
+Press `CTRL + C` to stop running.
+
+## Usage, option 2
+
+**heroku
+
+## Testing
+
+### Unit tests
+
+Usage: 
 
 ## My app
 
@@ -105,7 +120,7 @@ async def make_Response_Payload(Request_Payload: Request_Payload):
 ```
 </details>
 
-### Delivery Fee Calculator
+### delivery_fee_calculator
 
 The main functionality of application has build in `delivery_fee_calculator`.
 
@@ -125,5 +140,61 @@ def delivery_fee_calculator(Request_Payload):
 ```
 </details>
 
+### get_delivery_distance
 
+`get_delivery_distance` count the base fee of order based on the delivery distance.
+ - A delivery fee for the first 1000 meters (=1km) is 2€.
+ - If the delivery distance is longer than that, 1€ is added for every additional 500 meters.
+ 
+&rArr; The function add 100 cents to fee and reduce 500 meters from delivery_distance while delicery_distance is equals or smaller than zero. At the end it returns 200 or fee, if fee is more than 200.
 
+<details>
+<summary>Click here to see code.</summary>
+	
+```python
+def get_delivery_distance_fee(delivery_distance):
+	fee = 0
+	while delivery_distance > 0:
+		fee += 100
+		delivery_distance -= 500
+	return max(200, fee)
+```
+</details>
+
+### get_items_surcharge
+
+`get_items_surcharge` count the additional surcharge based on the amount of items.
+ - If the number of items is five or more, an additional 50 cent surcharge is added for each item above and including the fifth item.
+ - An extra "bulk" fee applies for more than 12 items of 1,20€.
+
+<details>
+<summary>Click here to see code.</summary>
+	
+```python
+def get_items_surcharge(items):
+	surcharge = (items - 4) * 50
+	bulk_fee = 120
+	if items > 12:
+		return surcharge + bulk_fee
+	return max(0, surcharge)
+```
+</details>
+
+### get_friday_rush_multiplier
+
+Add text
+
+<details>
+<summary>Click here to see code.</summary>
+	
+```python
+def get_friday_rush_multiplier(time):
+		dt_object = create_datetime_object(time)
+		weekday = dt_object.strftime("%A")
+		start_time = dt_object.replace(hour = 15, minute = 0, second = 0, microsecond = 0)
+		end_time = dt_object.replace(hour = 19, minute = 0, second = 0, microsecond = 0)
+		if weekday == "Friday" and start_time <= dt_object <= end_time:
+				return 1.2
+		return 1
+```
+</details>
