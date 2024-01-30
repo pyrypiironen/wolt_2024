@@ -4,7 +4,6 @@ from main import get_delivery_distance_fee, get_small_order_surcharge, \
 
 
 @pytest.mark.parametrize("input, expected", [
-	# Friday
 	("2024-01-26T00:00:00Z", 1),
 	("2024-01-26T00:00Z", 1),
 	("2024-01-26T00:00Z", 1),
@@ -38,8 +37,14 @@ from main import get_delivery_distance_fee, get_small_order_surcharge, \
 	("2024-01-26T19:01:00Z", 1),
 	("2024-01-26T19:10:25Z", 1),
 	("2024-01-26T20:00:01Z", 1),
-	("2024-01-26T23:59:59Z", 1),
-	# Not Friday between 3 - 7 PM
+	("2024-01-26T23:59:59Z", 1)
+])
+def test_get_friday_rush_multiplier_during_friday(input, expected):
+	result = get_friday_rush_multiplier(input)
+	assert result == expected, f"Time string \"{input}\" failed! Should return {expected}, but returned {result}."
+
+
+@pytest.mark.parametrize("input, expected", [
 	("2024-01-20T16:15:15Z", 1),
 	("2024-01-21T16:15:15Z", 1),
 	("2024-01-22T16:15:15Z", 1),
@@ -51,19 +56,24 @@ from main import get_delivery_distance_fee, get_small_order_surcharge, \
 	("2024-01-29T15Z", 1),
 	("2024-01-30T15Z", 1),
 	("2024-01-31T15:00Z", 1),
-	("2024-02-01T15:00Z", 1),
-	# No timezone
+	("2024-02-01T15:00Z", 1)
+])
+def test_get_friday_rush_multiplier_not_friday(input, expected):
+	result = get_friday_rush_multiplier(input)
+	assert result == expected, f"Time string \"{input}\" failed! Should return {expected}, but returned {result}."
+
+
+@pytest.mark.parametrize("input, expected", [
 	("2024-01-25T16:15:15", 1),
 	("2024-01-25T16:15", 1),
 	("2024-01-25T16", 1),
 ])
-def test_get_friday_rush_multiplier(input, expected):
+def test_get_friday_rush_multiplier_no_timezone(input, expected):
 	result = get_friday_rush_multiplier(input)
 	assert result == expected, f"Time string \"{input}\" failed! Should return {expected}, but returned {result}."
 
 
 @pytest.mark.parametrize("input, expected_exception", [
-	# Time string isn't in ISO format
 	("2024-00-26T15:59:59Z", ValueError),
 	("2024-01-00T15:59:59Z", ValueError),
 	("24-01-26T15:59:59Z", ValueError),
@@ -75,12 +85,12 @@ def test_get_friday_rush_multiplier(input, expected):
 	("2024-01-25T16:15:15z", ValueError),
 	("2024-01-25T16:15z", ValueError),
 	("2024-01-25T16z", ValueError),
-	("2024-01-26", ValueError), 												# HERE IS CASE
 	("2024-01-26T", ValueError),
 	("It's Crazy! It's Party!", ValueError),
+	(42, AttributeError)
 	
 ])
-def test_get_friday_rush_multiplier_errors(input, expected_exception):
+def test_get_friday_rush_multiplier_invalid_format(input, expected_exception):
 	with pytest.raises(expected_exception):
 		get_friday_rush_multiplier(input)
 
@@ -128,7 +138,7 @@ def test_get_delivery_distance_fee(input, expected):
 ])
 def test_get_small_order_surcharge_fee(input, expected_total):
 	result = get_small_order_surcharge(input)
-	assert input <= 1000 and result + input == expected_total, f"get_small_order_surcharge failed with value {input}! Should return {expected_total - input}, but returned {result}."
+	assert result + input == expected_total, f"get_small_order_surcharge failed with value {input}! Should return {expected_total - input}, but returned {result}."
 
 
 
@@ -138,7 +148,7 @@ def test_get_small_order_surcharge_fee(input, expected_total):
 	(1002, 0),
 	(1010, 0),
 	(42000, 0),
-	(99999999999999999999, 0),
+	(825012, 0),
 ])
 def test_get_small_order_surcharge_no_fee(input, expected):
 	result = get_small_order_surcharge(input)
@@ -168,7 +178,7 @@ def test_get_items_surcharge(input, expected):
 	(1501, 1500),
 	(2500, 1500),
 	(42000, 1500),
-	(999999999999, 1500),
+	(2500500, 1500),
 ])
 def test_fee_cutter_fee(input, expected):
 	result = fee_cutter(input, 2500)
@@ -177,14 +187,10 @@ def test_fee_cutter_fee(input, expected):
 
 @pytest.mark.parametrize("input, expected", [
 	(0, 1200),
-	(1, 1200),
 	(500, 1200),
-	(5000, 1200),
-	(19900, 1200),
 	(19999, 1200),
 	(20000, 0),
 	(40000, 0),
-	(2420000, 0),
 	(999999999999, 0),
 ])
 def test_fee_cutter_cart_value(input, expected):

@@ -1,58 +1,28 @@
 from fastapi import FastAPI
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, Field, field_validator
 from datetime import datetime
+from validators import validate_time
 
 
 app = FastAPI(title="Delivery Fee Calculator")
 
 
 class Request_Payload(BaseModel):
-	cart_value: int
-	delivery_distance: int
-	number_of_items: int
+	cart_value: int = Field(strict = True, ge = 0)
+	delivery_distance: int = Field(strict = True, ge = 0)
+	number_of_items: int = Field(strict = True, ge = 1)
 	time: str
-
-	@field_validator("cart_value")
-	def validate_cart_value(cls, cart_value):
-		if not isinstance(cart_value, int):
-			raise ValueError("Error: cart_value must be an integer.")
-		if cart_value < 0:
-			raise ValueError("Error: cart_value cannot be negative.")
-		return cart_value
-	
-	@field_validator("delivery_distance")
-	def validate_delivery_distance(cls, delivery_distance):
-		if not isinstance(delivery_distance, int):
-			raise ValueError("Error: delivery_distance must be an integer.")
-		if delivery_distance < 0:
-			raise ValueError("Error: delivery_distance cannot be negative.")
-		return delivery_distance
-	
-	@field_validator("number_of_items")
-	def validate_number_of_items(cls, number_of_items):
-		if not isinstance(number_of_items, int):
-			raise ValueError("Error: number_of_items must be an positive integer.")
-		if number_of_items < 0:
-			raise ValueError("Error: number_of_items must be an positive integer.")
-		return number_of_items
 	
 	@field_validator("time")
-	def validate_time(cls, time):
-		if not isinstance(time, str):
-			raise ValueError("Error: time must be a string.")
-		try:
-			time = time.replace("Z", "+00:00")
-			datetime.fromisoformat(time)
-		except ValueError:
-			raise ValueError("Error: time string must be in ISO format.")
-		return time
+	def time_validator(cls, value):
+		return validate_time(value)
 
 
 class Response_Payload(BaseModel):
 	delivery_fee: int
 
 
-@app.post("/delivery_fee/", response_model=Response_Payload)
+@app.post("/delivery_fee/", response_model = Response_Payload)
 async def make_Response_Payload(Request_Payload: Request_Payload):
 	fee = delivery_fee_calculator(Request_Payload)
 	return Response_Payload(delivery_fee = fee)
@@ -60,7 +30,7 @@ async def make_Response_Payload(Request_Payload: Request_Payload):
 
 def delivery_fee_calculator(Request_Payload):
 	fee = get_delivery_distance_fee(Request_Payload.delivery_distance)
-	fee += get_small_order_surcharge(Request_Payload.cart_value)
+	fee	+= get_small_order_surcharge(Request_Payload.cart_value)
 	fee += get_items_surcharge(Request_Payload.number_of_items)
 	fee *= get_friday_rush_multiplier(Request_Payload.time)
 	fee = fee_cutter(fee, Request_Payload.cart_value)
@@ -80,14 +50,11 @@ def get_small_order_surcharge(cart_value):
 
 
 def get_items_surcharge(items):
-	fee = 0
-	bulk_fee = 0
-	if items > 4:
-		fee = (items - 4) * 50
-		if items > 12:
-			bulk_fee = 120
-	return fee + bulk_fee
-
+	surcharge = (items - 4) * 50
+	bulk_fee = 120
+	if items > 12:
+		return surcharge + bulk_fee
+	return max(0, surcharge)
 
 def get_friday_rush_multiplier(time):
 		dt_object = create_datetime_object(time)
@@ -118,11 +85,9 @@ def	fee_cutter(fee, cart_value):
 
 # uvicorn main:app --reload
 
-# 2024-01-15T13:00:00Z
 
 
 
-# Testaa Request Payloadilla
 ## Tarkista testit ja Specification, ettei ajatusvirheitä
 ### ReadME
 #### Heroku
