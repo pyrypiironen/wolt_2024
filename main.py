@@ -1,6 +1,9 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, conint
 from dateutil import parser
+from datetime import datetime
+
+#del
 from typing import Union
 import pytz
 
@@ -34,6 +37,8 @@ def delivery_fee_calculator(Request_Payload):
 	rush_multiplier = get_friday_rush_multiplier(Request_Payload.time)
 	if rush_multiplier == None:
 		return None
+	# Change this to convert_time_str_to_object
+	# --> Use more sopiscated functions
 	fee = get_delivery_distance_fee(Request_Payload.delivery_distance)
 	fee += get_small_order_surcharge(Request_Payload.cart_value)
 	fee += get_items_surcharge(Request_Payload.number_of_items)
@@ -78,10 +83,13 @@ def get_items_surcharge(items):
 ###
 def get_friday_rush_multiplier(time):
 	try:
-		dt_object = parser.parse(time)
+		time = time.replace("Z", "+00:00")
+		time = time.replace("z", "+00:00") # not necessary
+		dt_object = datetime.fromisoformat(time)
 		start_rush = dt_object.replace(hour = 15, minute = 0, second = 0)
 		end_rush = dt_object.replace(hour = 19, minute = 0, second = 0)
-		if  dt_object.weekday() == 4 and start_rush <= dt_object <= end_rush:
+		weekday = dt_object.strftime("%A")
+		if weekday == "Friday" and start_rush <= dt_object <= end_rush:
 				return 1.2
 		return 1
 	except ValueError:
@@ -96,8 +104,18 @@ def	fee_cutter(fee, cart_value):
 	return min(fee, 1500)
 
 
-#parametrize testaamiseen
 
 # uvicorn main:app --reload
 
 # 2024-01-15T13:00:00Z
+
+
+
+# Testaa Request Payloadilla
+## Tarkista testit ja Specification, ettei ajatusvirheitä
+### ReadME
+
+
+
+
+

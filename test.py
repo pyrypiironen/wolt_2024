@@ -54,17 +54,20 @@ from main import get_delivery_distance_fee, get_small_order_surcharge, \
 	# Time string isn't in ISO format
 	("2024-00-26T15:59:59Z", None),
 	("2024-01-00T15:59:59Z", None),
-	#("24-01-26T15:59:59Z", None),		# Accidentally works
-	#("01-26T15:59:59Z", None),			# Accidentally works
-	#("2024-01T15:59:59Z", None),		# Accidentally works
+	("24-01-26T15:59:59Z", None),		# Accidentally works
+	("01-26T15:59:59Z", None),			# Accidentally works
+	("2024-01T15:59:59Z", None),		# Accidentally works
 	("2024-01-26T24:59:59Z", None),
 	("2024-01-26T25Z", None),
 	("/202401/26T00Z", None),
 	("It's Crazy! It's Party!", None),
-	# No timezone
+	# No timezone or small "z"
 	("2024-01-25T16:15:15", 1),
 	("2024-01-25T16:15", 1),
-	("2024-01-25T16", 1)
+	("2024-01-25T16", 1),
+	("2024-01-25T16:15:15z", 1),
+	("2024-01-25T16:15z", 1),
+	("2024-01-25T16z", 1)
 ])
 def test_get_friday_rush_multiplier(input, expected):
 	result = get_friday_rush_multiplier(input)
