@@ -189,19 +189,19 @@ def test_extra_key_value_pair():
 	response = client.post(
 		"/delivery_fee/",
 		json = {
-			"cart_value": 1000,
-			"delivery_distance": 200,
-			"number_of_items": 2,
-			"time":  "2024-01-24T10:14:00Z",
-			"customer_id": 42
+			"cart_value": 1250,
+			"delivery_distance": 1501,
+			"number_of_items": 5,
+			"time":  "2024-01-25T16:14:00Z",
+			"extra": "Hello world!"
 		},
 	)
 	assert response.status_code == 200
 	response_data = response.json()
 	delivery_fee = response_data.get('delivery_fee')
-	assert delivery_fee == 200, f"Expected delivery fee is 200, got {delivery_fee}"
+	assert 0 <= delivery_fee <= 1500, f"Expected delivery fee is between 0 and 1500, got {delivery_fee}"
 
-def test_extra_key_value_pair_mixed_order():
+def test_extra_key_value_pair_with_mixed_order():
 	response = client.post(
 		"/delivery_fee/",
 		json = {

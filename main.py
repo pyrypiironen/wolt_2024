@@ -30,7 +30,7 @@ async def make_Response_Payload(Request_Payload: Request_Payload):
 
 def delivery_fee_calculator(Request_Payload):
 	fee = get_delivery_distance_fee(Request_Payload.delivery_distance)
-	fee	+= get_small_order_surcharge(Request_Payload.cart_value)
+	fee += get_small_order_surcharge(Request_Payload.cart_value)
 	fee += get_items_surcharge(Request_Payload.number_of_items)
 	fee *= get_friday_rush_multiplier(Request_Payload.time)
 	fee = fee_cutter(fee, Request_Payload.cart_value)
@@ -63,7 +63,7 @@ def get_friday_rush_multiplier(time):
 		end_time = dt_object.replace(hour = 19, minute = 0, second = 0, microsecond = 0)
 		if weekday == "Friday" and start_time <= dt_object <= end_time:
 				return 1.2
-		return 1	
+		return 1
 
 
 def create_datetime_object(time):
@@ -87,9 +87,17 @@ def	fee_cutter(fee, cart_value):
 
 
 
-
-## Tarkista testit ja Specification, ettei ajatusvirheitä
 ### ReadME
+
+# testit selitettyinä
+# -- error codes and assert values
+#luettelo
+# kirjastot ja versiot
+# Keissit joita ei suojella:
+# - ylimääräiset key value parit ja perustelut
+# - sekaantunut järjestys
+
+
 #### Heroku
 
 
