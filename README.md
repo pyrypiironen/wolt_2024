@@ -6,21 +6,30 @@ I am applying for a backend position using Python.
 
 The Delivery Fee Calculator is an HTTP API (single POST endpoint), which calculates the delivery fee based on the information in the request payload (JSON) and includes the calculated delivery fee in the response payload (JSON).
 
+### Table of Contents
+
+1. [Usage](#usage)
+2. [Usage with Heroku](#usage-with-heroku)
+3. [Testing](#testing)
+4. [My App](#my-app)
+
 ## Usage
 
 The Application starts running by `uvicorn main:app`
 
 When the application is running you can send a POST request to `http://127.0.0.1:8000/delivery_fee/`
 
+Check LINKKI Payloads and errors handling for more information about the Request Payload.
+
 Press `CTRL + C` to stop running.
 
-## Usage, option 2
+## Usage with Heroku
 
 **heroku
 
 ## Testing
 
-### Unit tests
+### Unit Tests
 
 Unit tests tests every functions uses by `delivery_fee_calculator`. The test cases is chosen for testing edge cases and behavior of code in points on tresholds. Unit tests doesn't tests with invalid values. That part is covered by next part of testing.
 
@@ -48,9 +57,7 @@ Run all tests at the same time by `pytest test_payload_valids.py test_payload_er
 
 </details>
 
-## Usage: 
-
-## My app
+## My App
 
 ### Libraries and classes
 
@@ -67,7 +74,7 @@ from validators import validate_time	#my own implement
 ```
 </details>
 
-### Payloads and error handling
+### Payloads and Error Handling
 
 I used BaseModel, Field, and field_validator from pydantic to build payloads, because this offered an opportunity to
 keep code clean and not too bloated at the same time with good and partly automated error handling.
