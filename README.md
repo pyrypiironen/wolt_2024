@@ -19,7 +19,7 @@ The Application starts running by `uvicorn main:app`
 
 When the application is running you can send a POST request to `http://127.0.0.1:8000/delivery_fee/`
 
-Check LINKKI Payloads and errors handling for more information about the Request Payload.
+Check [Payloads and errors handling](#payloads-and-error-handling) for more information about the Request Payload.
 
 Press `CTRL + C` to stop running.
 
