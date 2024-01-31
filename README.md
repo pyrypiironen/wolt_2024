@@ -55,7 +55,10 @@ class Request_Payload(BaseModel):
 	delivery_distance: int = Field(strict = True, ge = 0)
 	number_of_items: int = Field(strict = True, ge = 1)
 	time: str
-	
+
+	class Config:
+		 extra = "forbid"
+
 	@field_validator("time")
 	def time_validator(cls, value):
 		return validate_time(value)
@@ -181,7 +184,11 @@ def get_items_surcharge(items):
 
 ### get_friday_rush_multiplier
 
-Add text
+`get_friday_rush` creates the datetime object, defines the weekday and then checks if it is Friday between 3 and 7 PM (including starting and ending points). If it is, the function returns multiplier 1.2. Else it returns 1.
+ - During the Friday rush, 3 - 7 PM, the delivery fee (the total fee including possible surcharges) will be multiplied by 1.2x.
+ - 
+The function doesn't cover another timezones as an input or checks them in case of error. It just assumes that the input is in UTC as told.
+
 
 <details>
 <summary>Click here to see the code.</summary>
@@ -195,5 +202,37 @@ def get_friday_rush_multiplier(time):
 		if weekday == "Friday" and start_time <= dt_object <= end_time:
 				return 1.2
 		return 1
+```
+</details>
+
+### create_datetime_object
+
+The "Z" in ISO format indicates UTC timezone, but as part of the string may cause error when uses `datetime.fromisoformat(time)`. TO avoid errors in all cases, I replaxed "Z" with "+00:00" which also indicates UTC timezone. After that I just create the datetime object and returns it.
+
+<details>
+<summary>Click here to see the code.</summary>
+
+```python
+def create_datetime_object(time):
+	time = time.replace("Z", "+00:00")
+	dt_object = datetime.fromisoformat(time)
+	return dt_object
+```
+</details>
+
+### fee_cutter
+
+`fee_cutter` cut the fee to maximum of 1500 cents. If the cart_value is equal to or more than 200 euros (20 000 cents) the fee is 0.
+ - The delivery fee can never be more than 15€, including possible surcharges.
+ - The delivery is free (0€) when the cart value is equal or more than 200€.
+
+<details>
+<summary>Click here to see the code.</summary>
+	
+```python
+def	fee_cutter(fee, cart_value):
+	if cart_value >= 20000:
+		fee = 0
+	return min(fee, 1500)
 ```
 </details>
