@@ -56,6 +56,7 @@ def get_items_surcharge(items):
 		return surcharge + bulk_fee
 	return max(0, surcharge)
 
+
 def get_friday_rush_multiplier(time):
 		dt_object = create_datetime_object(time)
 		weekday = dt_object.strftime("%A")
