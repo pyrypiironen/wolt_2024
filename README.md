@@ -22,6 +22,26 @@ Press `CTRL + C` to stop running.
 
 ### Unit tests
 
+Unit tests tests every functions uses by `delivery_fee_calculator`. The test cases is chosen for testing edge cases and behavior of code in points on tresholds. Unit tests doesn't tests with invalid values. That part is covered by next part of testing.
+
+Run the unit tests by `pytest test_unit_tests.py'
+
+### Testing Request_Payload
+
+Tests are split for two files; one for valid cases and one for error cases. The tests are planned to cover as much of the undesirable use as possible and focus on the cases which wouldn't be tested by unit tests.
+
+<details>
+<summary>Click here to see list of valid tests.</summary>
+	
+KUVA
+</details>
+
+<details>
+<summary>Click here to see list of error tests.</summary>
+	
+KUVA
+</details>
+
 Usage: 
 
 ## My app
