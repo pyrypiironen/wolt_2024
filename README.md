@@ -106,9 +106,6 @@ class Request_Payload(BaseModel):
 	number_of_items: int = Field(strict = True, ge = 1)
 	time: str
 
-	class Config:
-		 extra = "forbid"
-
 	@field_validator("time")
 	def time_validator(cls, value):
 		return validate_time(value)
