@@ -12,10 +12,11 @@ The Delivery Fee Calculator is an HTTP API (single POST endpoint), which calcula
 2. [Usage with Heroku](#usage-with-heroku)
 3. [Testing](#testing)
 4. [My App](#my-app)
+5. ADD requirements
 
 ## Usage
 
-The Application starts running by `uvicorn main:app`
+The Application starts running on your local machine by `uvicorn main:app`
 
 When the application is running you can send a POST request to `http://127.0.0.1:8000/delivery_fee/`
 
@@ -279,3 +280,5 @@ def	fee_cutter(fee, cart_value):
 	return min(fee, 1500)
 ```
 </details>
+
+## The Requirements
