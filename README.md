@@ -16,6 +16,12 @@ information in the request payload (JSON) and includes the calculated delivery f
 
 ## Usage
 
+Activate the virtual environment by `source venv/bin/activate`
+
+If your local machine doesn't run the Application without errors, use command `pip install -r requirements.txt`
+to install specific packages and avoid version mismatch. (note: not every package are mandatory, there is also 
+packages from some other projects I have done - I am still learning using environments the most efficient way)
+
 The Application starts running on your local machine by `uvicorn main:app`
 
 When the application is running you can send a POST request to `http://127.0.0.1:8000/delivery_fee/`
@@ -23,6 +29,8 @@ When the application is running you can send a POST request to `http://127.0.0.1
 Check [Payloads and errors handling](#payloads-and-error-handling) for more information about the Request Payload.
 
 Press `CTRL + C` to stop running.
+
+Deactivate the virtual environment by `source venv/bin/activate`
 
 ## Usage with Heroku
 
