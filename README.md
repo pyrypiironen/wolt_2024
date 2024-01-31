@@ -47,14 +47,15 @@ Run all tests at the same time by `pytest test_payload_valids.py test_payload_er
 <details>
 <summary>Click here to see list of valid tests.</summary>
 	
-![valid](https://github.com/pyrypiironen/wolt_2024/assets/93189576/07d4a49b-408b-4296-9cd5-e148dc62f5d8)
+![valid](https://github.com/pyrypiironen/wolt_2024/assets/93189576/35e905ac-c18b-4c1f-bee1-6a7dfa47aaaf)
+
 
 </details>
 
 <details>
 <summary>Click here to see list of error tests.</summary>
 	
-![error](https://github.com/pyrypiironen/wolt_2024/assets/93189576/ecb16274-c262-4441-8a43-e787a5e4c5a3)
+![error](https://github.com/pyrypiironen/wolt_2024/assets/93189576/412f83a9-038f-4c5e-8d8e-c7bf05136ff4)
 
 </details>
 
