@@ -4,7 +4,8 @@ This is my solution to [Wolt Summer 2024 Engineering Internship](https://github.
 
 I am applying for a backend position using Python.
 
-The Delivery Fee Calculator is an HTTP API (single POST endpoint), which calculates the delivery fee based on the information in the request payload (JSON) and includes the calculated delivery fee in the response payload (JSON).
+The Delivery Fee Calculator is an HTTP API (single POST endpoint), which calculates the delivery fee based on the
+information in the request payload (JSON) and includes the calculated delivery fee in the response payload (JSON).
 
 ### Table of Contents
 
@@ -12,7 +13,6 @@ The Delivery Fee Calculator is an HTTP API (single POST endpoint), which calcula
 2. [Usage with Heroku](#usage-with-heroku)
 3. [Testing](#testing)
 4. [My App](#my-app)
-5. ADD requirements
 
 ## Usage
 
@@ -32,13 +32,21 @@ Press `CTRL + C` to stop running.
 
 ### Unit Tests
 
-Unit tests tests every functions uses by `delivery_fee_calculator`. The test cases is chosen for testing edge cases and behavior of code in points on tresholds. Unit tests doesn't tests with invalid values. That part is covered by next part of testing.
+Unit tests tests every functions uses by `delivery_fee_calculator`. The test cases is chosen for testing edge cases and
+behavior of code in points on tresholds. Unit tests doesn't tests with invalid values. That part is covered by next part
+of testing.
 
 Run the unit tests by `pytest test_unit_tests.py`
 
 ### Testing Request_Payload
 
-Tests are split for two files; one for valid cases and one for error cases. The tests are planned to cover as much of the undesirable use as possible and focus on the cases which wouldn't be tested by unit tests.
+Tests are split for two files; one for valid cases and one for error cases. The tests are planned to cover as much of the
+undesirable use as possible and focus on the cases which wouldn't be tested by unit tests.
+
+The error tests checks that the response status code is not equal to 200 as well as the valid tests checks that it is 200.
+The valid tests also checks that the delivery fee is on range 0 too 1500 or is 1500 or is 0. The best option is chosen for
+every test particularly. The range 0 to 1500 is enough after wide range of unit tests. Unit tests are for making sure that
+the operating logic of application works.
 
 Run the tests by `pytest test_payload_valids.py test_payload_errors.py`
 
@@ -81,6 +89,9 @@ from validators import validate_time	#my own implement
 I used BaseModel, Field, and field_validator from pydantic to build payloads, because this offered an opportunity to
 keep code clean and not too bloated at the same time with good and partly automated error handling.
 
+I haven't added custom error messages because pydantic's error messaging providing detailed and structured information about
+each validation failure.
+
 <details>
 <summary>Click here to see payloads in my code.</summary>
 	
@@ -114,7 +125,9 @@ I used `@field_validator("time")` to validate the time from Request_Payload.
  - Validate that the string is in ISO format.
  - Validate that ISO format includes the time part, not only the date part
    - I did this by checking if the string includes 'T'. If not, it cannot be in ISO format including the time part.
-   - Even though the Specification of the Preliminary Assignment doesn't specify that ISO format should be in some specific form it would only be possible to check the Friday Rush with the exact time so I decided to handle ISO format without the time part as an invalid input.
+   - Even though the Specification of the Preliminary Assignment doesn't specify that ISO format should be in some specific
+   form it would only be possible to check the Friday Rush with the exact time so I decided to handle ISO format without the
+   time part as an invalid input.
 
 <details>
 <summary>Click here to see the code.</summary>
@@ -146,15 +159,16 @@ def validate_time(time: str) -> str:
 #### Note!
 
 I made decision to allow the extra key-value pairs in Request Payloads as well as changed order.
-This would give opportunity eg. to add parameter to use the calculator or to add some metadata to JSON in the future and wouldn't cause any missbehavior when using the application.
-It also would be justifiable to treated these cases as errors.
+This would give opportunity eg. to add parameter to use the calculator or to add some metadata to JSON in the future and
+wouldn't cause any missbehavior when using the application. It also would be justifiable to treated these cases as errors.
 
 ### The Application
 
 ```python
 app = FastAPI(title="Delivery Fee Calculator")
 ```
-My app using FastAPI Endpoint at the URL path `"/delivery_fee/"`, specifies the Response Model, defines the function for the actual endpoint handler, makes the function call for `delivery_fee_calculator`, and returns Response_Payload with calculated value.
+My app using FastAPI Endpoint at the URL path `"/delivery_fee/"`, specifies the Response Model, defines the function for
+the actual endpoint handler, makes the function call for `delivery_fee_calculator`, and returns Response_Payload with calculated value.
 
 <details>
 <summary>Click here to see the code.</summary>
@@ -172,6 +186,8 @@ async def make_Response_Payload(Request_Payload: Request_Payload):
 The main functionality of the application is built in `delivery_fee_calculator`.
 
 It takes in the Request_Payload and uses the values of the payload to calculate the correct delivery fee.
+
+There is no error handling inside this function. The error handling has been implemented earlier.
 
 <details>
 <summary>Click here to see the code.</summary>
@@ -193,7 +209,8 @@ def delivery_fee_calculator(Request_Payload):
  - A delivery fee for the first 1000 meters (=1km) is 2€.
  - If the delivery distance is longer than that, 1€ is added for every additional 500 meters.
  
-&rArr; The function adds 100 cents to the fee and reduces 500 meters from delivery_distance while delicery_distance is equal to or smaller than zero. In the end, it returns 200 or fee if the fee is more than 200.
+&rArr; The function adds 100 cents to the fee and reduces 500 meters from delivery_distance while delicery_distance is equal to
+or smaller than zero. In the end, it returns 200 or fee if the fee is more than 200.
 
 <details>
 <summary>Click here to see the code.</summary>
@@ -229,9 +246,10 @@ def get_items_surcharge(items):
 
 ### get_friday_rush_multiplier
 
-`get_friday_rush` creates the datetime object, defines the weekday and then checks if it is Friday between 3 and 7 PM (including starting and ending points). If it is, the function returns multiplier 1.2. Else it returns 1.
+`get_friday_rush` creates the datetime object, defines the weekday and then checks if it is Friday between 3 and 7 PM (including
+starting and ending points). If it is, the function returns multiplier 1.2. Else it returns 1.
  - During the Friday rush, 3 - 7 PM, the delivery fee (the total fee including possible surcharges) will be multiplied by 1.2x.
- - 
+
 The function doesn't cover another timezones as an input or checks them in case of error. It just assumes that the input is in UTC as told.
 
 
