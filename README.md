@@ -17,16 +17,16 @@ information in the request payload (JSON) and includes the calculated delivery f
 
 Activate the virtual environment by `source venv/bin/activate`
 
-If your local machine doesn't run the Application without errors, use command `pip install -r requirements.txt`
-to install specific packages and avoid version mismatch. (note: not every package are mandatory, there is also 
-packages from some other projects I have done - I am still learning using environments the most efficient way).
-Also check that your Python version is 3.11.1.s
+If your local machine doesn't run the Application without errors, use the command `pip install -r requirements.txt`
+to install specific packages and avoid version mismatch. (note: not every package is mandatory, there is also 
+packages from some other projects I have done - I am still learning to use environments in the most efficient way).
+Also, check that your Python version is 3.11.1.
 
 The Application starts running on your local machine by `uvicorn main:app`
 
 When the application is running you can send a POST request to `http://127.0.0.1:8000/delivery_fee/`
 
-Check [Payloads and errors handling](#payloads-and-error-handling) for more information about the Request Payload.
+Check [Payloads and error handling](#payloads-and-error-handling) for more information about the Request Payload.
 
 Press `CTRL + C` to stop running.
 
@@ -36,28 +36,28 @@ Deactivate the virtual environment by `deactivate`
 
 ### Unit Tests
 
-Unit tests tests every functions uses by `delivery_fee_calculator`. The test cases is chosen for testing edge cases and
-behavior of code in points on tresholds. Unit tests doesn't tests with invalid values. That part is covered by next part
+Unit tests test every function used by `delivery_fee_calculator`. The test cases are chosen for testing edge cases and
+behavior of code in points on thresholds. Unit tests doesn't tests with invalid values. That part is covered by the next part
 of testing.
 
 Run the unit tests by `pytest test_unit_tests.py`
 
 ### Testing Request_Payload
 
-Tests are split for two files; one for valid cases and one for error cases. The tests are planned to cover as much of the
-undesirable use as possible and focus on the cases which wouldn't be tested by unit tests.
+Tests are split into two files; one for valid cases and one for error cases. The tests are planned to cover as much of the
+undesirable use as possible and focus on the cases that wouldn't be tested by unit tests.
 
-The error tests checks that the response status code is not equal to 200 as well as the valid tests checks that it is 200.
-The valid tests also checks that the delivery fee is on range 0 too 1500 or is 1500 or is 0. The best option is chosen for
-every test particularly. This is accurate enough after wide range of unit tests. Unit tests are for making sure that
-the operating logic of application works.
+The error tests check that the response status code is not equal to 200 as well as the valid tests check that it is 200.
+The valid tests also check that the delivery fee is in the range of 0 to 1500 or equals to 1500 or equals to 0. The best option is chosen for
+every test particularly. This is accurate enough after a wide range of unit tests. Unit tests are for making sure that
+the operating logic of the application works.
 
 Run the tests by `pytest test_payload_valids.py test_payload_errors.py`
 
 Run all tests at the same time by `pytest test_payload_valids.py test_payload_errors.py test_unit_tests.py`
 
 <details>
-<summary>Click here to see list of valid tests.</summary>
+<summary>Click here to see a list of valid tests.</summary>
 	
 ![valid](https://github.com/pyrypiironen/wolt_2024/assets/93189576/35e905ac-c18b-4c1f-bee1-6a7dfa47aaaf)
 
@@ -65,7 +65,7 @@ Run all tests at the same time by `pytest test_payload_valids.py test_payload_er
 </details>
 
 <details>
-<summary>Click here to see list of error tests.</summary>
+<summary>Click here to see a list of error tests.</summary>
 	
 ![error](https://github.com/pyrypiironen/wolt_2024/assets/93189576/412f83a9-038f-4c5e-8d8e-c7bf05136ff4)
 
@@ -93,7 +93,7 @@ from validators import validate_time	#my own implement
 I used BaseModel, Field, and field_validator from pydantic to build payloads, because this offered an opportunity to
 keep code clean and not too bloated at the same time with good and partly automated error handling.
 
-I haven't added custom error messages because pydantic's error messaging providing detailed and structured information about
+I haven't added custom error messages because pydantic's error messaging provides detailed and structured information about
 each validation failure.
 
 <details>
@@ -162,9 +162,9 @@ def validate_time(time: str) -> str:
 ```
 #### Note!
 
-I made decision to allow the extra key-value pairs in Request Payloads as well as changed order.
-This would give opportunity eg. to add parameter to use the calculator or to add some metadata to JSON in the future and
-wouldn't cause any missbehavior when using the application. It also would be justifiable to treated these cases as errors.
+I decided to allow the extra key-value pairs in Request Payloads as well as a changed order.
+This would give the opportunity eg. to add parameters to use the calculator or to add some metadata to JSON in the future and
+wouldn't cause any misbehavior when using the application. It also would be justifiable to treat these cases as errors.
 
 ### The Application
 
@@ -172,7 +172,7 @@ wouldn't cause any missbehavior when using the application. It also would be jus
 app = FastAPI(title="Delivery Fee Calculator")
 ```
 My app using FastAPI Endpoint at the URL path `"/delivery_fee/"`, specifies the Response Model, defines the function for
-the actual endpoint handler, makes the function call for `delivery_fee_calculator`, and returns Response_Payload with calculated value.
+the actual endpoint handler, makes the function call for `delivery_fee_calculator`, and returns Response_Payload with the calculated value.
 
 <details>
 <summary>Click here to see the code.</summary>
@@ -187,7 +187,7 @@ async def make_Response_Payload(Request_Payload: Request_Payload):
 
 ### delivery_fee_calculator
 
-The main functionality of the application is built in `delivery_fee_calculator`.
+The main functionality of the application is built-in `delivery_fee_calculator`.
 
 It takes in the Request_Payload and uses the values of the payload to calculate the correct delivery fee.
 
@@ -250,11 +250,11 @@ def get_items_surcharge(items):
 
 ### get_friday_rush_multiplier
 
-`get_friday_rush` creates the datetime object, defines the weekday and then checks if delivery time is on Friday between 3 and 7 PM (including
-starting and ending points). If it is, the function returns multiplier 1.2. Else it returns 1.
+`get_friday_rush` creates the datetime object, defines the weekday, and then checks if delivery time is on Friday between 3 and 7 PM (including
+starting and ending points). If it is, the function returns a multiplier 1.2. Else it returns 1.
  - During the Friday rush, 3 - 7 PM, the delivery fee (the total fee including possible surcharges) will be multiplied by 1.2x.
 
-The function doesn't cover another timezones as an input or checks them in case of error. It just assumes that the input is in UTC as told.
+The function doesn't cover other timezones as an input or check them in case of error. It just assumes that the input is in UTC as told.
 
 
 <details>
@@ -274,7 +274,7 @@ def get_friday_rush_multiplier(time):
 
 ### create_datetime_object
 
-The "Z" in ISO format indicates UTC timezone, but as part of the string may cause error when uses `datetime.fromisoformat(time)`. TO avoid errors in all cases, I replaxed "Z" with "+00:00" which also indicates UTC timezone. After that I just create the datetime object and returns it.
+The "Z" in ISO format indicates UTC timezone, but as part of the string may cause an error when using `datetime.fromisoformat(time)`. To avoid errors in all cases, I replaced "Z" with "+00:00" which also indicates UTC timezone. After that, the function just create the datetime object and returns it.
 
 <details>
 <summary>Click here to see the code.</summary>
@@ -289,9 +289,9 @@ def create_datetime_object(time):
 
 ### fee_cutter
 
-`fee_cutter` cut the fee to maximum of 1500 cents. If the cart_value is equal to or more than 200 euros (20 000 cents) the fee is 0.
+`fee_cutter` cut the fee to a maximum of 1500 cents. If the cart_value is equal to or more than 200 euros (20 000 cents) the fee is 0.
  - The delivery fee can never be more than 15€, including possible surcharges.
- - The delivery is free (0€) when the cart value is equal or more than 200€.
+ - The delivery is free (0€) when the cart value is equal to or more than 200€.
 
 <details>
 <summary>Click here to see the code.</summary>
