@@ -79,31 +79,3 @@ def	fee_cutter(fee, cart_value):
 	return min(fee, 1500)
 
 
-
-
-
-
-
-# uvicorn main:app --reload
-
-
-
-### ReadME
-
-# testit selitettyinä
-# -- error codes and assert values
-#luettelo
-# kirjastot ja versiot
-# Keissit joita ei suojella:
-# - ylimääräiset key value parit ja perustelut
-# - sekaantunut järjestys
-
-
-#### Heroku
-
-
-
-# RuntimeError: The starlette.testclient module requires the httpx package to be installed.
-#E   You can install this with:
-#E       $ pip install httpx
-

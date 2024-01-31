@@ -10,9 +10,8 @@ information in the request payload (JSON) and includes the calculated delivery f
 ### Table of Contents
 
 1. [Usage](#usage)
-2. [Usage with Heroku](#usage-with-heroku)
-3. [Testing](#testing)
-4. [My App](#my-app)
+2. [Testing](#testing)
+3. [My App](#my-app)
 
 ## Usage
 
@@ -20,7 +19,8 @@ Activate the virtual environment by `source venv/bin/activate`
 
 If your local machine doesn't run the Application without errors, use command `pip install -r requirements.txt`
 to install specific packages and avoid version mismatch. (note: not every package are mandatory, there is also 
-packages from some other projects I have done - I am still learning using environments the most efficient way)
+packages from some other projects I have done - I am still learning using environments the most efficient way).
+Also check that your Python version is 3.11.1.s
 
 The Application starts running on your local machine by `uvicorn main:app`
 
@@ -30,11 +30,7 @@ Check [Payloads and errors handling](#payloads-and-error-handling) for more info
 
 Press `CTRL + C` to stop running.
 
-Deactivate the virtual environment by `source venv/bin/activate`
-
-## Usage with Heroku
-
-**heroku
+Deactivate the virtual environment by `deactivate`
 
 ## Testing
 
