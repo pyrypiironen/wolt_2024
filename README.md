@@ -15,12 +15,13 @@ information in the request payload (JSON) and includes the calculated delivery f
 
 ## Usage
 
-Activate the virtual environment by `source venv/bin/activate`
+Create an virtual environment by `python3 -m venv env`
 
-If your local machine doesn't run the Application without errors, use the command `pip install -r requirements.txt`
-to install specific packages and avoid version mismatch. (note: not every package is mandatory, there is also 
-packages from some other projects I have done - I am still learning to use environments in the most efficient way).
-Also, check that your Python version is 3.11.1.
+Activate the virtual environment by `source env/bin/activate`
+
+Use the command `pip install -r requirements.txt` to install specific packages and avoid version mismatch.
+
+Make sure that you have Python version 3.11.1 or newer. The application may also work with older Python versions, but is tested by 3.11.1.
 
 The Application starts running on your local machine by `uvicorn main:app`
 
@@ -36,8 +37,7 @@ Deactivate the virtual environment by `deactivate`
 
 ### Unit Tests
 
-Unit tests test every function used by `delivery_fee_calculator`. The test cases are chosen for testing edge cases and
-behavior of code in points on thresholds. Unit tests doesn't tests with invalid values. That part is covered by the next part
+Unit tests test every function used by `delivery_fee_calculator`. The test cases are chosen for testing edge cases and the behavior of code in points on thresholds. Unit tests don't test with invalid values. That part is covered by the next part
 of testing.
 
 Run the unit tests by `pytest test_unit_tests.py`
@@ -48,7 +48,7 @@ Tests are split into two files; one for valid cases and one for error cases. The
 undesirable use as possible and focus on the cases that wouldn't be tested by unit tests.
 
 The error tests check that the response status code is not equal to 200 as well as the valid tests check that it is 200.
-The valid tests also check that the delivery fee is in the range of 0 to 1500 or equals to 1500 or equals to 0. The best option is chosen for
+The valid tests also check that the delivery fee is in the range of 0 to 1500 or equal to 1500 or equal to 0. The best option is chosen for
 every test particularly. This is accurate enough after a wide range of unit tests. Unit tests are for making sure that
 the operating logic of the application works.
 
@@ -187,7 +187,7 @@ async def make_Response_Payload(Request_Payload: Request_Payload):
 
 ### delivery_fee_calculator
 
-The main functionality of the application is built-in `delivery_fee_calculator`.
+The main functionality of the application is built in `delivery_fee_calculator`.
 
 It takes in the Request_Payload and uses the values of the payload to calculate the correct delivery fee.
 
@@ -250,7 +250,7 @@ def get_items_surcharge(items):
 
 ### get_friday_rush_multiplier
 
-`get_friday_rush` creates the datetime object, defines the weekday, and then checks if delivery time is on Friday between 3 and 7 PM (including
+`get_friday_rush` creates the datetime object, defines the weekday, and then checks if the delivery time is on Friday between 3 and 7 PM (including
 starting and ending points). If it is, the function returns a multiplier 1.2. Else it returns 1.
  - During the Friday rush, 3 - 7 PM, the delivery fee (the total fee including possible surcharges) will be multiplied by 1.2x.
 
@@ -274,7 +274,7 @@ def get_friday_rush_multiplier(time):
 
 ### create_datetime_object
 
-The "Z" in ISO format indicates UTC timezone, but as part of the string may cause an error when using `datetime.fromisoformat(time)`. To avoid errors in all cases, I replaced "Z" with "+00:00" which also indicates UTC timezone. After that, the function just create the datetime object and returns it.
+The "Z" in ISO format indicates UTC timezone, but as part of the string may cause an error when using `datetime.fromisoformat(time)`. To avoid errors in all cases, I replaced "Z" with "+00:00" which also indicates UTC timezone. After that, the function just creates the datetime object and returns it.
 
 <details>
 <summary>Click here to see the code.</summary>
