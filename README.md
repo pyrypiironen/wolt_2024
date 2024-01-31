@@ -45,7 +45,7 @@ undesirable use as possible and focus on the cases which wouldn't be tested by u
 
 The error tests checks that the response status code is not equal to 200 as well as the valid tests checks that it is 200.
 The valid tests also checks that the delivery fee is on range 0 too 1500 or is 1500 or is 0. The best option is chosen for
-every test particularly. The range 0 to 1500 is enough after wide range of unit tests. Unit tests are for making sure that
+every test particularly. This is accurate enough after wide range of unit tests. Unit tests are for making sure that
 the operating logic of application works.
 
 Run the tests by `pytest test_payload_valids.py test_payload_errors.py`
@@ -246,7 +246,7 @@ def get_items_surcharge(items):
 
 ### get_friday_rush_multiplier
 
-`get_friday_rush` creates the datetime object, defines the weekday and then checks if it is Friday between 3 and 7 PM (including
+`get_friday_rush` creates the datetime object, defines the weekday and then checks if delivery time is on Friday between 3 and 7 PM (including
 starting and ending points). If it is, the function returns multiplier 1.2. Else it returns 1.
  - During the Friday rush, 3 - 7 PM, the delivery fee (the total fee including possible surcharges) will be multiplied by 1.2x.
 
@@ -299,5 +299,3 @@ def	fee_cutter(fee, cart_value):
 	return min(fee, 1500)
 ```
 </details>
-
-## The Requirements
