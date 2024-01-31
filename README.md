@@ -63,7 +63,7 @@ I chose to use fastapi, pydantic and datetime libraries to build my application.
 from fastapi import FastAPI
 from pydantic import BaseModel, Field, field_validator
 from datetime import datetime
-from validators import validate_time
+from validators import validate_time	#my own implement
 ```
 </details>
 
@@ -73,7 +73,7 @@ I used BaseModel, Field, and field_validator from pydantic to build payloads, be
 keep code clean and not too bloated at the same time with good and partly automated error handling.
 
 <details>
-<summary>Click here to see payloads.</summary>
+<summary>Click here to see payloads in my code.</summary>
 	
 ```python
 class Request_Payload(BaseModel):
@@ -100,11 +100,11 @@ wouldn't raise an error without using this.
 
 `ge = 0` and `ge = 1` are for minimum values for the int (ge = greater or equal).
 
-`@field_validator("time")` validate the time from Request_Payload.
+I used `@field_validator("time")` to validate the time from Request_Payload.
  - Validate that time is a string.
  - Validate that the string is in ISO format.
  - Validate that ISO format includes the time part, not only the date part
-   - I did this by checking if the string includes T. If not, it cannot be in ISO format including the time part.
+   - I did this by checking if the string includes 'T'. If not, it cannot be in ISO format including the time part.
    - Even though the Specification of the Preliminary Assignment doesn't specify that ISO format should be in some specific form it would only be possible to check the Friday Rush with the exact time so I decided to handle ISO format without the time part as an invalid input.
 
 <details>
@@ -129,6 +129,16 @@ def validate_time(time: str) -> str:
 	return time
 ```
 </details>
+
+#### Example of Request_Payload:
+```python
+{"cart_value": 790, "delivery_distance": 2235, "number_of_items": 4, "time": "2024-01-15T13:00:00Z"}
+```
+#### Note!
+
+I made decision to allow the extra key-value pairs in Request Payloads as well as changed order.
+This would give opportunity eg. to add parameter to use the calculator or to add some metadata to JSON in the future and wouldn't cause any missbehavior when using the application.
+It also would be justifiable to treated these cases as errors.
 
 ### The Application
 
